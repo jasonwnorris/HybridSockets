@@ -33,7 +33,7 @@ OBJECT_FILES = \
 	$(patsubst src/%.cpp, obj/%.o, $(SOURCE_FILES))
 
 # Define executable file.
-EXECUTABLE = bin/hybridthreadpool
+EXECUTABLE = bin/hybridsockets
 
 all: $(EXECUTABLE)
 

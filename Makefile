@@ -22,7 +22,8 @@ LIBRARY_PATHS = \
 
 # Define libraries to link into the executable.
 LINKER_FLAGS = \
-	-lSDL2
+	-lSDL2 \
+	-lSDL2_net
 
 # Define source files.
 SOURCE_FILES = \

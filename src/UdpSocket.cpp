@@ -37,7 +37,7 @@ namespace HS
     SDL_Log("[HS::UdpSocket] Quit SDL2.");
   }
 
-  bool UdpSocket::Open(int p_Port, int p_PacketSize)
+  bool UdpSocket::Open(Uint16 p_Port, int p_PacketSize)
   {
     m_Socket = SDLNet_UDP_Open(p_Port);
     if (m_Socket == nullptr)
@@ -69,13 +69,10 @@ namespace HS
     SDL_Log("[HS::UdpSocket] Closed socket.");
   }
 
-  bool UdpSocket::Send(const std::string& p_Host, int p_Port, const std::string& p_Data)
+  bool UdpSocket::Send(const Address& p_Address, const std::string& p_Data)
   {
-    if (SDLNet_ResolveHost(&m_Packet->address, p_Host.c_str(), p_Port) < 0)
-    {
-        SDL_Log("[HS::UdpSocket] Failed to resolve host: %s", SDLNet_GetError());
-        return false;
-    }
+    m_Packet->address.host = p_Address.Host;
+    m_Packet->address.port = p_Address.Port;
 
     int length = p_Data.length();
     std::memcpy(m_Packet->data, p_Data.c_str(), length);
@@ -90,21 +87,14 @@ namespace HS
     return true;
   }
 
-  bool UdpSocket::Receive(std::string& p_Data, std::string& p_Address)
+  bool UdpSocket::Receive(Address& p_Address, std::string& p_Data)
   {
     int code = SDLNet_UDP_Recv(m_Socket, m_Packet);
     if (code > 0)
     {
-      Uint8* parts = (Uint8*)&m_Packet->address.host;
-      std::ostringstream os;
-      os << static_cast<unsigned short>(parts[0]) << "."
-         << static_cast<unsigned short>(parts[1]) << "."
-         << static_cast<unsigned short>(parts[2]) << "."
-         << static_cast<unsigned short>(parts[3]) << ":"
-         << m_Packet->address.port;
-
-      p_Data = std::string(m_Packet->data, m_Packet->data + m_Packet->len);
-      p_Address = os.str();
+      p_Address.Host = m_Packet->address.host;
+      p_Address.Port = m_Packet->address.port;
+      p_Data.assign(m_Packet->data, m_Packet->data + m_Packet->len);
 
       return true;
     }

@@ -10,19 +10,18 @@ void RunAsServer()
   HS::UdpSocket socket;
   socket.Open(5000);
 
+  HS::Address address;
   std::string data;
-  std::string address;
 
-  bool running = true;
-  while (running)
+  while (true)
   {
-    if (socket.Receive(data, address))
+    if (socket.Receive(address, data))
     {
-      std::cout << "Received[" << address << "]: \"" << data << "\"" << std::endl;
+      std::cout << "Received[" << address.Host << ":" << address.Port << "]: \"" << data << "\"" << std::endl;
 
       if (data == "quit")
       {
-        running = false;
+        break;
       }
     }
   }
@@ -32,11 +31,12 @@ void RunAsServer()
 
 void RunAsClient()
 {
+  HS::Address address = HS::Address::Parse("localhost", 5000);
   HS::UdpSocket socket;
   socket.Open();
-  socket.Send("localhost", 5000, "hello");
-  socket.Send("localhost", 5000, "foobar");
-  socket.Send("localhost", 5000, "quit");
+  socket.Send(address, "hello");
+  socket.Send(address, "foobar");
+  socket.Send(address, "quit");
   socket.Close();
 }
 

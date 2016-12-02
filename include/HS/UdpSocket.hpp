@@ -3,10 +3,8 @@
 #ifndef __HS_UDPSOCKET_HPP__
 #define __HS_UDPSOCKET_HPP__
 
-// SDL2 Includes
-#include <SDL2/SDL_net.h>
-// STL Includes
-#include <string>
+// HS Includes
+#include <HS/Address.hpp>
 
 namespace HS
 {
@@ -16,11 +14,11 @@ namespace HS
       UdpSocket();
       ~UdpSocket();
 
-      bool Open(int p_Port = 0, int p_PacketSize = 1024);
+      bool Open(Uint16 p_Port = 0, int p_PacketSize = 1024);
       void Close();
 
-      bool Send(const std::string& p_Host, int p_Port, const std::string& p_Data);
-      bool Receive(std::string& p_Data, std::string& p_Address);
+      bool Send(const Address& p_Address, const std::string& p_Data);
+      bool Receive(Address& p_Address, std::string& p_Data);
 
     private:
       UDPsocket m_Socket;
